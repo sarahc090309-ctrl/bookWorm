@@ -297,7 +297,7 @@ struct ContentView: View {
                         .allowsHitTesting(false)
                         VStack(spacing: 57) {
                             Image("Placeholder")
-                                .frame(width: .infinity, height: 385)
+                                .frame(height: 385)
                             ZStack {
                                 Button {
                                     withAnimation(.easeInOut(duration: 0.2)) {

@@ -598,6 +598,19 @@ struct BookWormSetUp: View {
                     .foregroundStyle(Color.textColor)
                 
                 Button("Let's go!") {
+                    
+                    if UserDefaults.standard.object(forKey: "InstallDate") == nil {
+                        UserDefaults.standard.set(Date(), forKey: "InstallDate")
+                    }
+                    
+                    GoogleSheetsSyncManager.shared.syncOnboardingData(
+                        wormName: wormProfile.name,
+                        userAge: userAge,
+                        frequency: selectedReadingFrequency.description,
+                        length: selectedReadingLength.description,
+                        goalMinutes: readingTime
+                    )
+                    
                     withAnimation(.easeInOut(duration: 0.35)) {
                         hasCompletedSetUp = true
                     }
@@ -611,7 +624,64 @@ struct BookWormSetUp: View {
     }
 }
 
+struct ReadingDataPayload: Codable {
+    let userId: String
+    let wormName: String
+    let userAge: Int?
+    let readingFrequency: String
+    let readingLength: String
+    let dailyGoalMinutes: Int?
+    let totalReadingTime: Int
+    let daysSinceDownload: Int
+}
 
+class GoogleSheetsSyncManager {
+    static let shared = GoogleSheetsSyncManager()
+    private let webAppURL = "https://script.google.com/macros/s/AKfycbyfUWZW1hI7itsAxrp-tXM4lmFeLyaLagl06GlIi3JC1cwrBnJIu1mKI1lNP6J8oeF5/exec"
+    
+    func syncOnboardingData(wormName: String, userAge: Int?, frequency: String, length: String, goalMinutes: Int?) {
+        guard let url = URL(string: webAppURL) else { return }
+        
+        let userId = UIDevice.current.identifierForVendor?.uuidString ?? "UnknownUser"
+        
+        // Calculate days since download
+        let installDate = UserDefaults.standard.object(forKey: "InstallDate") as? Date ?? Date()
+        let daysSinceDownload = max(0, Calendar.current.dateComponents([.day], from: installDate, to: Date()).day ?? 0)
+        
+        // Total reading time initialized to 0 during setup
+        let totalReadingTime = UserDefaults.standard.integer(forKey: "TotalReadingTime")
+        
+        let payload = ReadingDataPayload(
+            userId: userId,
+            wormName: wormName,
+            userAge: userAge,
+            readingFrequency: frequency,
+            readingLength: length,
+            dailyGoalMinutes: goalMinutes,
+            totalReadingTime: totalReadingTime,
+            daysSinceDownload: daysSinceDownload
+        )
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(payload)
+        } catch {
+            print("Failed to encode payload: \(error)")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Network error syncing setup data: \(error)")
+                return
+            }
+            print("Successfully sent setup data to Google Sheets!")
+        }.resume()
+    }
+}
 #Preview {
     BookWormSetUp(hasCompletedSetUp: .constant(false))
         .environment(WormProfile())

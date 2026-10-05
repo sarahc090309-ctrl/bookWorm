@@ -45,7 +45,7 @@ struct Help: View {
             Section(header: Text("Want to know the programmer of this app?")
                 .font(.custom("Gaegu-Regular", size: 25))
                 .foregroundStyle(Color.textColor)) {
-                    Text("Hi! I'm Sarah, the student programmer who made this app. If you have questions, reach out to me at sarahc090309@gmail.com. Happy reading!")
+                    Text("Hi! I'm Sarah, the student programmer who made this app. If you have questions, reach out to me at book.worm.app9@gmail.com. Happy reading!")
                         .font(.custom("Gaegu-Regular", size: 20))
                         .foregroundStyle(Color.textColor)
                 }
