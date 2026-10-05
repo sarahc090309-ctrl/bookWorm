@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2236DE8F30731C630075D62F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 2236DE8E30731C580075D62F /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		2236DE8E30731C580075D62F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		22B6E2EF2FD9138B009744F4 /* bookWorm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bookWorm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -45,6 +50,7 @@
 		22B6E2E62FD9138B009744F4 = {
 			isa = PBXGroup;
 			children = (
+				2236DE8E30731C580075D62F /* .gitignore */,
 				22B6E2F12FD9138B009744F4 /* bookWorm */,
 				22B6E2F02FD9138B009744F4 /* Products */,
 			);
@@ -122,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2236DE8F30731C630075D62F /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
