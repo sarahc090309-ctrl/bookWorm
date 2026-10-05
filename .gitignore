@@ -1,62 +1,72 @@
-# Xcode
-#
-# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+# ==========================================
+# macOS System Files
+# ==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
 
-## User settings
-xcuserdata/
-
-## Obj-C/Swift specific
+# ==========================================
+# Xcode Build & Cache Directories
+# ==========================================
+build/
+DerivedData/
+*.moved-aside
 *.hmap
 
-## App packaging
+# ==========================================
+# Xcode User Specific Settings
+# ==========================================
+# Keeps your personal window layouts and open tabs out of the shared repo
+xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# ==========================================
+# App Packaging & Diagnostics
+# ==========================================
 *.ipa
-*.dSYM.zip
 *.dSYM
+*.dSYM.zip
 
-## Playgrounds
-timeline.xctimeline
-playground.xcworkspace
-
-# Swift Package Manager
-#
-# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
-# Packages/
-# Package.pins
-# Package.resolved
-# *.xcodeproj
-#
-# Xcode automatically generates this directory with a .xcworkspacedata file and xcuserdata
-# hence it is not needed unless you have added a package configuration file to your project
-# .swiftpm
-
+# ==========================================
+# Swift Package Manager (SPM)
+# ==========================================
 .build/
+.swiftpm/
 
+# NOTE: Un-comment the line below ONLY if you want to prevent committing
+# Package.resolved (useful for libraries, but usually committed for apps).
+# Package.resolved
+
+# ==========================================
+# Dependancy Managers (Optional)
+# ==========================================
 # CocoaPods
-#
-# We recommend against adding the Pods directory to your .gitignore. However
-# you should judge for yourself, the pros and cons are mentioned at:
-# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
-#
-# Pods/
-#
-# Add this line if you want to avoid checking in source code from the Xcode workspace
-# *.xcworkspace
+Pods/
 
 # Carthage
-#
-# Add this line if you want to avoid checking in source code from Carthage dependencies.
-# Carthage/Checkouts
-
 Carthage/Build/
+Carthage/Checkouts/
 
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo.
-# Instead, use fastlane to re-generate the screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/#source-control
-
+# ==========================================
+# CI/CD & Automation (Fastlane)
+# ==========================================
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# ==========================================
+# Local Configuration / Secrets
+# ==========================================
+# If you store API keys locally in an xcconfig or specific file
+*.xcconfig
+Secrets.swift
