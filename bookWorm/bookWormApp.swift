@@ -13,8 +13,9 @@ import SwiftUI
     var name: String = "Wormus"
     var selectedWorm: BookWormSetUp.Worm = .basic
     
-    var apples: Int = 0
+    var apples: Int = 100
     var totalTime: TimeInterval = 0
+    var readingGoal: Double = 0.0
     
     var shelfOne: String = "BasicShelf"
     var shelfTwo: String = "BasicShelf"
@@ -79,6 +80,11 @@ extension Color {
 struct bookWormApp: App {
     
     @State private var wormProfile = WormProfile()
+    
+    init() {
+        DailyNotificationManager.setupDailyRepeatingNotification()
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+    }
     
     var body: some Scene {
         WindowGroup {

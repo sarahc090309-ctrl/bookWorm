@@ -578,6 +578,9 @@ struct BookWormSetUp: View {
                 }
             }
             Button("Next") {
+                if let unwrappedReadingTime = readingTime {
+                    wormProfile.readingGoal = Double(unwrappedReadingTime)
+                }
                 step = 11
             }
             .buttonStyle(.borderedProminent)
