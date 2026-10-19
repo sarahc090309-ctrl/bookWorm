@@ -579,7 +579,7 @@ struct BookWormSetUp: View {
             }
             Button("Next") {
                 if let unwrappedReadingTime = readingTime {
-                    wormProfile.readingGoal = Double(unwrappedReadingTime)
+                    wormProfile.readingGoal = Double(unwrappedReadingTime) * 60
                 }
                 step = 11
             }

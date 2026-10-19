@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Combine
-import UserNotifications
 
 struct ContentView: View {
     
@@ -17,19 +16,13 @@ struct ContentView: View {
     @State private var selectedStoreItem = Catalog().catalog[0][0]
     @State private var showWormProfileView = false
     
-    @State private var totalNumApples: Int = 0
     @State private var newNumApples: Int = 0
 
     @State private var elapsedTime: TimeInterval = 0.0
     @AppStorage("readingTimerIsOn") private var isTimerOn: Bool = false
     @AppStorage("readingTimerStartDate") private var timerStartDate: Double = 0.0
     @AppStorage("readingTimerAccumulatedTime") private var accumulatedTime: Double = 0.0
-    
-    @AppStorage("dailyReadingTime") private var dailyReadingTime: Double = 0
-    @AppStorage("lastReadingDate") private var lastReadingDate: String = ""
-    
-    @State private var hasTriggeredMetGoal = false
-    
+
     @State private var endAlertIsPresented: Bool = false
     @State private var tooLongAlert: Bool = false
     
@@ -407,15 +400,6 @@ struct ContentView: View {
                 }
             )
         }
-        .onChange(of: dailyReadingTime) { oldVal, newVal in
-            if newVal >= wormProfile.readingGoal && oldVal < wormProfile.readingGoal && wormProfile.readingGoal != 0 {
-                metGoalNotification()
-            }
-        }
-        .onAppear{
-            requestNotificationPermission()
-            checkAndResetDaily()
-        }
         .overlay {
             if showStore {
                 ZStack {
@@ -585,7 +569,6 @@ struct ContentView: View {
     }
 
     private func endTimer() {
-        DailyNotificationManager.userReadToday()
         timer?.invalidate()
         timer = nil
         refreshElapsedTime()
@@ -593,9 +576,7 @@ struct ContentView: View {
         timerStartDate = 0.0
         accumulatedTime = elapsedTime
         wormProfile.totalTime += elapsedTime
-        dailyReadingTime += elapsedTime
         newNumApples = convertToApples(elapsedTime)
-        totalNumApples += newNumApples
         endAlertIsPresented = true
         wormProfile.apples += newNumApples
     }
@@ -629,135 +610,6 @@ struct ContentView: View {
         let seconds = Int(time) % 60
         
         return "You read for \(hours) hours, \(minutes) minutes, and \(seconds) seconds!"
-    }
-    
-    private func checkAndResetDaily() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        
-        let todayString = formatter.string(from: Date())
-        
-        if lastReadingDate != todayString {
-            dailyReadingTime = 0
-            lastReadingDate = todayString
-        }
-    }
-    
-    func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if granted {
-                print("Permission granted!")
-            } else if let error = error {
-                print("Error requesting permission: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    func metGoalNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "Goal met!"
-        content.body = "Congratulations! You've met your reading goal for today."
-        content.sound = UNNotificationSound.default
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        
-        let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
-            content: content,
-            trigger: trigger
-        )
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Failed to schedule notification: \(error.localizedDescription)")
-            }
-        }
-    }
-}
-
-struct DailyNotificationManager {
-    
-    private static let didntReadNotificationID = "com.bookWorm.daily830PM"
-    
-    static func setupDailyRepeatingNotification() {
-        let center = UNUserNotificationCenter.current()
-        
-        center.getPendingNotificationRequests { requests in
-            let alreadyScheduled = requests.contains { $0.identifier == didntReadNotificationID }
-            
-            if !alreadyScheduled {
-                let content = UNMutableNotificationContent()
-                content.title = "Reminder!"
-                content.body = "You haven't read today!"
-                
-                var dateComponents = DateComponents()
-                dateComponents.hour = 20
-                dateComponents.minute = 30
-                
-                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-                let request = UNNotificationRequest(identifier: didntReadNotificationID, content: content, trigger: trigger)
-                
-                center.add(request) {error in
-                    if let error = error {
-                        print("Error setting up didn't read notification: \(error.localizedDescription)")
-                    } else {
-                        print("Daily repeating notifications established for 8:30 PM.")
-                    }
-                }
-            }
-        }
-    }
-    
-    static func userReadToday() {
-            let center = UNUserNotificationCenter.current()
-
-            center.removePendingNotificationRequests(withIdentifiers: [didntReadNotificationID])
-            print("Cancelled tonight's 8:30 PM notification.")
-
-            let content = UNMutableNotificationContent()
-            content.title = "Reminder!"
-            content.body = "You haven't read today!"
-
-            let calendar = Calendar.current
-            var tomorrowComponents = calendar.dateComponents([.year, .month, .day], from: calendar.date(byAdding: .day, value: 1, to: Date())!)
-            tomorrowComponents.hour = 20
-            tomorrowComponents.minute = 30
-            
-            // 4. Queue up the tomorrow-only trigger
-            let tomorrowTrigger = UNCalendarNotificationTrigger(dateMatching: tomorrowComponents, repeats: false)
-            let tomorrowRequest = UNNotificationRequest(identifier: didntReadNotificationID, content: content, trigger: tomorrowTrigger)
-            
-            center.add(tomorrowRequest) { error in
-                if let error = error {
-                    print("Error staging tomorrow's catch: \(error.localizedDescription)")
-                } else {
-                    print("Tomorrow's reminder is queued up safely.")
-                }
-            }
-        }
-}
-
-class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
-    static let shared = NotificationDelegate()
-    
-    // This method is called when a notification arrives while the app is in the foreground
-    func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-    ) {
-        // Specify that you want the banner, sound, and badge to show up anyway
-        completionHandler([.banner, .sound, .badge])
-    }
-    
-    // Optional: Handle what happens when the user taps on the notification
-    func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse,
-        withCompletionHandler completionHandler: @escaping () -> Void
-    ) {
-        // Add custom navigation or action handling here if needed
-        completionHandler()
     }
 }
 

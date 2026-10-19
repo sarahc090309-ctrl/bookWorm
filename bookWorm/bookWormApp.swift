@@ -81,11 +81,6 @@ struct bookWormApp: App {
     
     @State private var wormProfile = WormProfile()
     
-    init() {
-        DailyNotificationManager.setupDailyRepeatingNotification()
-        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
-    }
-    
     var body: some Scene {
         WindowGroup {
             ScreenNavigator()
