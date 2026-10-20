@@ -9,13 +9,11 @@ import SwiftUI
 import PhotosUI
 
 struct Library: View {
-    @State private var books: [Book] = []
+    @AppStorage("saved_books") private var books: [Book] = []
     
-    // Controls presenting the form
     @State private var showingAddBook: Bool = false
     @State private var selectedBookForEdit: Book? = nil
-    
-    // Form State variables
+
     @State private var bookTitle: String = ""
     @State private var bookAuthor: String = ""
     @State private var bookRating: Double = 0.0
@@ -331,11 +329,23 @@ struct Library: View {
         bookAuthor = book.author
         bookRating = book.rating
         bookReview = book.review
-        coverImageData = book.coverImageData
         coverImageURL = book.coverImageURL
+        
+        if let filename = book.imageFileName {
+            coverImageData = BookImageManager.loadImage(named: filename)
+        }
     }
     
     private func saveBook() {
+        var savedFileName = selectedBookForEdit?.imageFileName
+
+        if let coverImageData {
+            if let oldFileName = savedFileName {
+                BookImageManager.deleteImage(named: oldFileName)
+            }
+            savedFileName = BookImageManager.saveImage(coverImageData)
+        }
+
         if let existingBook = selectedBookForEdit,
            let index = books.firstIndex(where: { $0.id == existingBook.id }) {
             books[index] = Book(
@@ -345,7 +355,7 @@ struct Library: View {
                 rating: bookRating,
                 review: bookReview,
                 imageName: existingBook.imageName,
-                coverImageData: coverImageData,
+                imageFileName: savedFileName,
                 coverImageURL: coverImageURL
             )
         } else {
@@ -355,12 +365,12 @@ struct Library: View {
                 rating: bookRating,
                 review: bookReview,
                 imageName: "book.fill",
-                coverImageData: coverImageData,
+                imageFileName: savedFileName,
                 coverImageURL: coverImageURL
             )
             books.insert(newBook, at: 0)
         }
-        
+         
         dismissAndReset()
     }
     
@@ -476,15 +486,61 @@ struct Library: View {
     }
 }
 
-struct Book: Identifiable {
+struct Book: Identifiable, Codable, Hashable {
     var id = UUID()
     var title: String
     var author: String
     var rating: Double
     var review: String = ""
     var imageName: String
-    var coverImageData: Data? = nil
+    var imageFileName: String? = nil
     var coverImageURL: URL? = nil
+}
+
+enum BookImageManager {
+    static func saveImage(_ data: Data) -> String? {
+        let filename = UUID().uuidString + ".jpg"
+        let url = getDocumentsDirectory().appendingPathComponent(filename)
+        do {
+            try data.write(to: url)
+            return filename
+        } catch {
+            print("Failed to save image: \(error)")
+            return nil
+        }
+    }
+
+    static func loadImage(named filename: String) -> Data? {
+        let url = getDocumentsDirectory().appendingPathComponent(filename)
+        return try? Data(contentsOf: url)
+    }
+
+    static func deleteImage(named filename: String) {
+        let url = getDocumentsDirectory().appendingPathComponent(filename)
+        try? FileManager.default.removeItem(at: url)
+    }
+
+    private static func getDocumentsDirectory() -> URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+}
+
+extension [Book]: @retroactive RawRepresentable {
+    public init?(rawValue: String) {
+        guard let data = rawValue.data(using: .utf8),
+              let decoded = try? JSONDecoder().decode([Book].self, from: data) else {
+            return nil
+        }
+        self = decoded
+    }
+
+    public var rawValue: String {
+        guard let data = try? JSONEncoder().encode(self),
+              let string = String(data: data, encoding: .utf8) else {
+            return "[]"
+        }
+        return string
+    }
 }
 
 struct BookView: View {
@@ -553,9 +609,10 @@ struct BookView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.blue)
-            
-            if let coverImageData = book.coverImageData,
-               let uiImage = UIImage(data: coverImageData) {
+             
+            if let filename = book.imageFileName,
+               let data = BookImageManager.loadImage(named: filename),
+               let uiImage = UIImage(data: data) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
