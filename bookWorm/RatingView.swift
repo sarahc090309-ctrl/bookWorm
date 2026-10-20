@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct RatingView: View {
-    // 1. Core Binding property changed to Double for fractional values
     @Binding var rating: Double
     
     var maxRating: Int = 5
@@ -62,6 +61,5 @@ struct RatingView: View {
 
 
 #Preview {
-    // Previewing with a constant state mapping
     RatingView(rating: .constant(3))
 }

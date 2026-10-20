@@ -592,7 +592,7 @@ struct ContentView: View {
     }
     
     private func convertToApples(_ time: TimeInterval) -> Int {
-        Int(time / 180)
+        Int(time / 60)
     }
     
     private func formatTime(_ time: TimeInterval) -> String {

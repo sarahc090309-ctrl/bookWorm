@@ -13,7 +13,7 @@ import SwiftUI
     var name: String = "Wormus"
     var selectedWorm: BookWormSetUp.Worm = .basic
     
-    var apples: Int = 100
+    var apples: Int = 0
     var totalTime: TimeInterval = 0
     var readingGoal: Double = 0.0
     
