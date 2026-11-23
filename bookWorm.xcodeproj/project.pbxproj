@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2229D49530B4E3B7000A0D00 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2229D49430B4E3B7000A0D00 /* README.md */; };
 		2236DE8F30731C630075D62F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 2236DE8E30731C580075D62F /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2229D49430B4E3B7000A0D00 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2236DE8E30731C580075D62F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		22B6E2EF2FD9138B009744F4 /* bookWorm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bookWorm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -52,6 +54,7 @@
 			children = (
 				2236DE8E30731C580075D62F /* .gitignore */,
 				22B6E2F12FD9138B009744F4 /* bookWorm */,
+				2229D49430B4E3B7000A0D00 /* README.md */,
 				22B6E2F02FD9138B009744F4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -128,6 +131,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2229D49530B4E3B7000A0D00 /* README.md in Resources */,
 				2236DE8F30731C630075D62F /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
