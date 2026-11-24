@@ -576,6 +576,7 @@ struct ContentView: View {
         timerStartDate = 0.0
         accumulatedTime = elapsedTime
         wormProfile.totalTime += elapsedTime
+        GoogleSheetsSyncManager.shared.updateTotalReadingTime(Int(wormProfile.totalTime))
         newNumApples = convertToApples(elapsedTime)
         endAlertIsPresented = true
         wormProfile.apples += newNumApples

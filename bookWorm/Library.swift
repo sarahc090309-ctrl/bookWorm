@@ -83,7 +83,6 @@ struct Library: View {
                             .bold()
                             .padding(.bottom, 12)
                         
-                        // Scrollable form content so keyboard never pushes content off-screen
                         ScrollView {
                             VStack(spacing: 16) {
                                 HStack(alignment: .top, spacing: 16) {
