@@ -197,7 +197,7 @@ struct Library: View {
                         placeholderCoverIcon
                     }
                 }
-                .id(coverImageURL) // Ensures AsyncImage reloads immediately when URL changes
+                .id(coverImageURL)
             } else {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
