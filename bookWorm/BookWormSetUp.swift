@@ -20,7 +20,7 @@ struct BookWormSetUp: View {
     
     @State private var showAgeQuestionAlert: Bool = false
     
-    enum Worm: String, CaseIterable, Identifiable {
+    enum Worm: String, CaseIterable, Identifiable, Codable {
         case basic, earth, gummy, silk, fake, string
         
         var id: String { rawValue }
@@ -337,11 +337,14 @@ struct BookWormSetUp: View {
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Color.textColor)
                 
-                TextField("Name", text: $localName)
-                    .textFieldStyle(.roundedBorder)
+                TextField("Name", text: $localName, prompt: Text("Name").foregroundStyle(Color.gray))
+                    .textFieldStyle(.plain)
+                    .padding(10)
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 8))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Color.textColor)
                     .font(.custom("Gaegu-Regular", size: 32))
+                    
             }
             .padding(.horizontal, 40)
             Button("Next") {
@@ -387,12 +390,15 @@ struct BookWormSetUp: View {
                     .foregroundStyle(Color.textColor)
                     .multilineTextAlignment(.center)
                 
-                TextField("Age", value: $userAge, format: .number)
-                    .textFieldStyle(.roundedBorder)
+                TextField("Age", value: $userAge, format: .number, prompt: Text("Age").foregroundStyle(Color.gray))
+                    .textFieldStyle(.plain)
+                    .padding(10)
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 8))
                     .keyboardType(.numberPad)
                     .multilineTextAlignment(.center)
                     .font(.custom("Gaegu-Regular", size: 32))
                     .foregroundStyle(Color.textColor)
+                    .preferredColorScheme(.light)
             }
             VStack(spacing: 20){
                 Button("Next") {
@@ -552,7 +558,7 @@ struct BookWormSetUp: View {
                 Button("I don't want to set a goal") {
                     step = 11
                 }
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.gray)
                 .font(.custom("Gaegu-Regular", size: 16))
             }
         }
@@ -566,12 +572,15 @@ struct BookWormSetUp: View {
                     Text("I would like to read")
                         .font(.custom("Gaegu-Bold", size: 32))
                         .foregroundStyle(Color.textColor)
-                    TextField("#", value: $readingTime, format: .number)
-                        .textFieldStyle(.roundedBorder)
+                    TextField("#", value: $readingTime, format: .number, prompt: Text("#").foregroundStyle(Color.gray))
+                        .textFieldStyle(.plain)
+                        .padding(10)
                         .keyboardType(.numberPad)
                         .frame(width: 60)
+                        .background(Color.white, in: RoundedRectangle(cornerRadius: 8))
                         .font(.custom("Gaegu-Bold", size: 32))
                         .foregroundStyle(Color.textColor)
+                        .preferredColorScheme(.light)
                     Text("minutes every day.")
                         .font(.custom("Gaegu-Bold", size: 32))
                         .foregroundStyle(Color.textColor)

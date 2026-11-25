@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-enum ItemType {
+enum ItemType: Codable {
     case clock, shelf, library, shelfObj, decor, wallpaper, hat, scarf
 }
 
-enum Location {
+enum Location: Codable, Equatable {
     case clock, library, wallpaper, hat, scarf
     case shelfOne, shelfTwo, shelfThree, shelfFour, shelfFive, shelfSix, shelfSeven, shelfEight
     case decorOne, decorTwo, decorThree, decorFour, decorFive, decorSix, decorSeven, decorEight
     case shelfObjOne, shelfObjTwo, shelfObjThree, shelfObjFour, shelfObjFive, shelfObjSix, shelfObjSeven, shelfObjEight, shelfObjNine, shelfObjTen, shelfObjEleven, shelfObjTwelve, shelfObjThirteen
 }
 
-struct Item: Identifiable{
+struct Item: Identifiable, Codable {
     
     let id: UUID
     
