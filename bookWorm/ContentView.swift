@@ -352,6 +352,7 @@ struct ContentView: View {
                                     .padding(.leading, 10)
                                 Text("\(wormProfile.apples)")
                                     .font(.custom("Gaegu-Bold", size: 32))
+                                    .foregroundStyle(Color.textColor)
                                     .padding(10)
                             }
                         }
@@ -462,8 +463,10 @@ struct ContentView: View {
                     
                     VStack(spacing: 30) {
                         Text(formatTime(elapsedTime))
-                            .font(.custom("Gaegu-Regular", size: 48))
+                            .font(.custom("Gaegu-Regular", size: 40))
+                            .foregroundStyle(Color.textColor)
                             .padding()
+                            .preferredColorScheme(.light)
                         
                         // Control buttons
                         HStack(spacing: 20) {
@@ -576,6 +579,7 @@ struct ContentView: View {
         timerStartDate = 0.0
         accumulatedTime = elapsedTime
         wormProfile.totalTime += elapsedTime
+        GoogleSheetsSyncManager.shared.updateTotalReadingTime(Int(wormProfile.totalTime))
         newNumApples = convertToApples(elapsedTime)
         endAlertIsPresented = true
         wormProfile.apples += newNumApples

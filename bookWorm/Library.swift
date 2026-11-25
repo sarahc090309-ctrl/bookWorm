@@ -80,10 +80,10 @@ struct Library: View {
                     VStack(spacing: 0) {
                         Text(selectedBookForEdit == nil ? "New Book Entry" : "Edit Entry")
                             .font(.custom("Gaegu-Bold", size: 28))
+                            .foregroundStyle(Color(Color.textColor))
                             .bold()
                             .padding(.bottom, 12)
                         
-                        // Scrollable form content so keyboard never pushes content off-screen
                         ScrollView {
                             VStack(spacing: 16) {
                                 HStack(alignment: .top, spacing: 16) {
@@ -100,9 +100,16 @@ struct Library: View {
                                     
                                     VStack(alignment: .leading, spacing: 8) {
                                         VStack(alignment: .leading, spacing: 2) {
-                                            TextField("Title:", text: $bookTitle)
-                                                .textFieldStyle(.roundedBorder)
-                                                .font(.custom("Gaegu-Regular", size: 20))
+                                            TextField(
+                                                "Title:",
+                                                text: $bookTitle,
+                                                prompt: Text("Title:").foregroundStyle(Color.gray)
+                                            )
+                                            .textFieldStyle(.plain)
+                                            .padding(8)
+                                            .background(Color.white, in: RoundedRectangle(cornerRadius: 8))
+                                            .foregroundStyle(Color.textColor)
+                                            .font(.custom("Gaegu-Regular", size: 20))
                                                 .onChange(of: bookTitle) { _, newTitle in
                                                     queueBookSuggestionSearch(for: newTitle)
                                                 }
@@ -112,13 +119,20 @@ struct Library: View {
                                             }
                                         }
                                         
-                                        TextField("Author:", text: $bookAuthor)
-                                            .textFieldStyle(.roundedBorder)
-                                            .font(.custom("Gaegu-Regular", size: 20))
+                                        TextField(
+                                            "Author:",
+                                            text: $bookAuthor,
+                                            prompt: Text("Author:").foregroundStyle(Color.gray)
+                                        )
+                                        .textFieldStyle(.plain)
+                                        .padding(8)
+                                        .background(Color.white, in: RoundedRectangle(cornerRadius: 8))
+                                        .foregroundStyle(Color.textColor)
+                                        .font(.custom("Gaegu-Regular", size: 20))
                                         
                                         Text(bookRating == 0 ? "Tap to Rate" : "Rating: \(formatRating(bookRating))")
                                             .font(.custom("Gaegu-Regular", size: 15))
-                                            .foregroundColor(.secondary)
+                                            .foregroundStyle(Color.textColor.opacity(0.65))
                                         
                                         RatingView(rating: $bookRating)
                                     }
@@ -126,12 +140,18 @@ struct Library: View {
                                 
                                 ZStack(alignment: .topLeading) {
                                     RoundedRectangle(cornerRadius: 8)
-                                        .fill(Color(uiColor: .systemGray6))
+                                        .fill(Color(red: 242 / 255, green: 242 / 255, blue: 247 / 255))
                                     
-                                    TextField("Review...", text: $bookReview, axis: .vertical)
-                                        .padding(8)
-                                        .multilineTextAlignment(.leading)
-                                        .font(.custom("Gaegu-Regular", size: 18))
+                                    TextField(
+                                        "Review...",
+                                        text: $bookReview,
+                                        prompt: Text("Review...").foregroundStyle(Color.gray),
+                                        axis: .vertical
+                                    )
+                                    .padding(8)
+                                    .multilineTextAlignment(.leading)
+                                    .foregroundStyle(Color.textColor)
+                                    .font(.custom("Gaegu-Regular", size: 18))
                                 }
                                 .frame(height: 140)
                             }
@@ -152,6 +172,7 @@ struct Library: View {
                                 saveBook()
                             }
                             .font(.custom("Gaegu-Regular", size: 22))
+                            .foregroundStyle(Color.gray)
                             .disabled(bookTitle.trimmingCharacters(in: .whitespaces).isEmpty)
                         }
                         .padding(.top, 8)
@@ -198,7 +219,7 @@ struct Library: View {
                         placeholderCoverIcon
                     }
                 }
-                .id(coverImageURL) // Ensures AsyncImage reloads immediately when URL changes
+                .id(coverImageURL)
             } else {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
@@ -218,7 +239,7 @@ struct Library: View {
     private var placeholderCoverIcon: some View {
         Image(systemName: "book.closed")
             .font(.title)
-            .foregroundColor(.secondary)
+            .foregroundStyle(Color.textColor.opacity(0.65))
     }
     
     private var bookSuggestionPopup: some View {
@@ -228,14 +249,14 @@ struct Library: View {
                     ProgressView()
                     Text("Searching books...")
                         .font(.custom("Gaegu-Regular", size: 16))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.textColor.opacity(0.65))
                     Spacer()
                 }
                 .padding(10)
             } else if let bookSuggestionMessage {
                 Text(bookSuggestionMessage)
                     .font(.custom("Gaegu-Regular", size: 16))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textColor.opacity(0.65))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(10)
             } else {
@@ -255,7 +276,7 @@ struct Library: View {
                                         
                                         Text(suggestion.author.isEmpty ? "Unknown author" : suggestion.author)
                                             .font(.custom("Gaegu-Regular", size: 14))
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(Color.textColor.opacity(0.65))
                                             .lineLimit(1)
                                     }
                                     Spacer()
@@ -302,13 +323,13 @@ struct Library: View {
                             .scaledToFill()
                     default:
                         Image(systemName: "book.closed")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.textColor.opacity(0.65))
                     }
                 }
                 .id(thumbnailURL)
             } else {
                 Image(systemName: "book.closed")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textColor.opacity(0.65))
             }
         }
         .frame(width: 28, height: 40)
@@ -579,7 +600,7 @@ struct BookView: View {
                 }
             }
             .padding()
-            .background(Color(uiColor: .secondarySystemBackground))
+            .background(Color(red: 242 / 255, green: 242 / 255, blue: 247 / 255))
             .cornerRadius(12)
             .overlay(RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.textColor, lineWidth: 2))
