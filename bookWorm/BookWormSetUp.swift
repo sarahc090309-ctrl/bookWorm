@@ -570,6 +570,7 @@ struct BookWormSetUp: View {
             VStack(spacing: 20) {
                 VStack {
                     Text("I would like to read")
+                        .multilineTextAlignment(.center)
                         .font(.custom("Gaegu-Bold", size: 32))
                         .foregroundStyle(Color.textColor)
                     TextField("#", value: $readingTime, format: .number, prompt: Text("#").foregroundStyle(Color.gray))
